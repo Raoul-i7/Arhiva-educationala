@@ -1,0 +1,20 @@
+#include <fstream>
+#include <climits>
+const std::string programName = "ssm";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+int main() {
+    int N, j = 1, sTotal = 0, sMin = 0, sMax = INT_MIN, left = 0, right = 0;
+    f >> N;
+    for (int i = 1; i <= N; ++i) {
+        int nr;
+        f >> nr;
+        sTotal += nr;
+        if (sTotal - sMin > sMax)
+            sMax = sTotal - sMin, right = i, left = j;
+        if (sTotal < sMin)
+            sMin = sTotal, j = i + 1;
+    }
+    g << sMax << ' ' << left << ' ' << right;
+    return 0x0;
+}
