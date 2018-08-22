@@ -1,0 +1,22 @@
+#include <fstream>
+const std::string programName = "kfib";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+int Fibonacci(int);
+const int constant = 666013;
+int main() {
+    int k;
+    f >> k;
+    k = k % (2 * constant + 2);
+    g << Fibonacci(k);
+    return 0x0;
+}
+int Fibonacci(int k) {
+    int T1 = 1, T2 = 1, AUX;
+    for (int i = 3; i <= k; ++i) {
+        AUX = (T1 + T2) % constant;
+        T1 = T2;
+        T2 = AUX;
+    }
+    return AUX;
+}
