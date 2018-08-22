@@ -1,0 +1,71 @@
+#include <fstream>
+const std::string programName = "heapuri";
+const int MAX = 2e5;
+int nh, values[MAX + 5], heap[MAX + 5], pos[MAX + 5];
+bool comp(int, int);
+void swapX(int, int);
+void upHeap(int);
+void downHeap(int);
+void addNode(int);
+void delNode(int);
+int main(){
+    std::ifstream f(programName + ".in");
+    std::ofstream g(programName + ".out");
+    int N;
+    f >> N;
+    int node = 0;
+    for (int i = 1; i <= N; ++i) {
+        int quest;
+        f >> quest;
+        switch(quest) {
+        case 1:
+            f >> values[++node];
+            addNode(node);
+            break;
+        case 2:
+            f >> quest;
+            delNode(pos[quest]);
+            break;
+        case 3:
+            g << values[heap[1]] << "\n";
+        }
+    }
+    return 0x0;
+}
+bool comp(int x, int y) {
+    return values[x] < values[y];
+}
+void swapX(int child, int parent) {
+    std::swap(heap[child], heap[parent]);
+    std::swap(pos[heap[child]], pos[heap[parent]]);
+}
+void upHeap(int child) {
+    int parent = child >> 1;
+    bool var = comp(heap[child], heap[parent]);
+    if (parent and var) {
+        swapX(child,parent);
+        upHeap(parent);
+    }
+}
+void downHeap(int parent) {
+    int child = parent << 1;
+    bool var = comp(heap[child + 1], heap[child]);
+    bool var2 = child + 1 <= nh;
+    child = child + (var and var2);
+    bool var3 = comp(heap[child], heap[parent]);
+    if (child <= nh and var3) {
+        swapX(parent, child);
+        downHeap(child);
+    }
+}
+void addNode(int node) {
+    heap[++nh] = node;
+    pos[node] = nh;
+    upHeap(pos[node]);
+}
+void delNode(int node) {
+    swapX(node, nh);
+    pos[heap[nh]] = 0;
+    heap[nh--] = 0;
+    downHeap(node);
+}
