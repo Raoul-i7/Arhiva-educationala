@@ -1,0 +1,32 @@
+#include <fstream>
+using namespace std;
+ifstream f("permutari.in");
+ofstream g("permutari.out");
+void select(int);
+bool valid(int);
+void print();
+int N, a[10];
+int main(){
+    f >> N;
+    select(1);
+    return 0x0;
+}
+void select(int p){
+    if(p == N + 1)
+        print();
+    else
+        for(a[p] = 1; a[p] <= N; ++a[p])
+            if(valid(p))
+                select(p + 1);
+}
+bool valid(int p){
+    for(int i = 0; i < p; ++i)
+        if(a[i] == a[p])
+            return false;
+    return true;
+}
+void print(){
+    for(int i = 1; i <= N; ++i)
+        g << a[i] << ' ';
+    g << "\n";
+}
