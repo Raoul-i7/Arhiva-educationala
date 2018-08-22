@@ -1,0 +1,18 @@
+#include <fstream>
+const std::string programName = "ssnd";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+int main() {
+    int64_t N;
+    f >> N;
+    for (int i = 1; i <= N; ++i) {
+        int64_t nr;
+        f >> nr;
+        int s = 0, counter = 0;
+        for (int i = 1; i <= nr; ++i)
+            if (!(nr % i))
+                s += i,  ++counter;
+        g << counter << ' ' << s % 9973 << "\n";
+    }
+    return 0x0;
+}
