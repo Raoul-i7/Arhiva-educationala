@@ -1,0 +1,24 @@
+#include <fstream>
+const std::string programName = "elmaj";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int MAX = 5e5;
+int main() {
+    int N;
+    f >> N;
+    int ap[MAX + 5] = {0};
+    while (N--) {
+        int nr;
+        f >> nr;
+        ap[nr]++;
+    }
+    int max = 0, Xcopy;
+    for (int i = 0; i < MAX; ++i)
+        if (ap[i] > 0)
+                if (ap[i] > max) {
+                    max = ap[i];
+                    Xcopy = i;
+                }
+    g << Xcopy << ' ' << max;
+    return 0x0;
+}
