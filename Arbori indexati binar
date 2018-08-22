@@ -1,0 +1,63 @@
+#include <fstream>
+const int MAX = 1e5;
+int Query(int, int[]);
+int QuerySearch(int, int, int, int[]);
+int intervalSum(int, int, int[]);
+void Update(int, int, int, int[]);
+int main(){
+    std::ifstream f("aib.in");
+    std::ofstream g("aib.out");
+    int N, M;
+    f >> N >> M;
+    int pw2;
+    for (pw2 = 1; pw2 <= N; pw2 *= 2);
+        pw2 /= 2;
+    int aib[MAX + 5];
+    for (int pos = 1; pos <= N; ++pos){
+        int val;
+        f >> val;
+        Update(N, pos, val, aib);
+    }
+    while (M--) {
+        int quest;
+        f >> quest;
+        if (!quest){
+            int position;
+            int value;
+            f >> position >> value;
+            Update(N, position, value, aib);
+        } else if (quest == 1){ //AICI
+            int left, right;
+            f >> left >> right;
+            g << intervalSum(left, right, aib) << "\n";
+        } else {
+            int value;
+            f >> value;
+            g << QuerySearch(N, pw2, value, aib) << "\n";
+        }
+    }
+    return 0x0;
+}
+int Query(int pos, int aib[]) {
+    int ans = 0;
+    for (int i = pos; i > 0; i -= (i & -i))
+        ans += aib[i];
+    return ans;
+}
+int QuerySearch(int N, int power2, int value, int aib[]) {
+    for (int pos = 0, step = power2; step; step /= 2)
+        if ((pos + step) <= N and aib[pos + step] <= value){
+            pos += step;
+            value -= aib[pos];
+            if(!value)
+                return pos;
+        }
+    return -1;
+}
+int intervalSum(int left, int right, int aib[]) {
+    return Query(right, aib) - Query(left - 1, aib);
+}
+void Update(int N, int pos, int val, int aib[]) {
+    for (int i = pos; i <= N; i += (i & -i))
+        aib[i] += val;
+}
