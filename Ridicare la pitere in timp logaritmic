@@ -1,0 +1,18 @@
+#include <fstream>
+const std::string programName = "lgput";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int constant = 1999999973;
+int main() {
+    int N, P;
+    f >> N >> P;
+    int64_t Xcopy, sol = 1;
+    Xcopy = N;
+    for (int i = 0; (1 << i) <= P; ++i) { // Luam toti bitii lui P pe rand
+        if ( ((1 << i) & P) > 0) // Daca bitul i din P este 1 atunci adaugam N ^ (2 ^ i) la solutie
+            sol = (sol * Xcopy) % constant;
+        Xcopy = (Xcopy * Xcopy) % constant; // Inmultim Xcopy cu Xcopy ca sa obtinem N ^ (2 ^ (i + 1))
+    }
+    g << sol;
+    return 0x0;
+}
