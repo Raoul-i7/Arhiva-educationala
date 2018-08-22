@@ -1,0 +1,48 @@
+#include <fstream>
+const std::string programName = "rmq";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int NMAX = 1e5, INF = 0x3f3f3f3f;
+void Update(int, int, int, int, int, int[]);
+void QuerySearch(int, int, int, int, int, int&, int[]);
+int main() {
+    int N, M;
+    f >> N >> M;
+    int St[4 * NMAX + 5];
+    for (int i = 1; i <= N; ++i) {
+        int x;
+        f >> x;
+        Update(1, 1, N, i, x, St);
+    }
+    while (M--) {
+        int left, right;
+        f >> left >> right;
+        int min = INF;
+        QuerySearch(1, 1, N, left, right, min, St);
+        g << min << "\n";
+    }
+    return 0x0;
+}
+void Update(int node, int left, int right, int pos, int val, int St[4 * NMAX + 5]) {
+    if(left == right)
+        St[node] = val;
+    else {
+        int mid = (left + right) / 2, leftSon = 2 * node, rightSon = leftSon + 1;
+        if(pos <= mid)
+            Update(leftSon, left, mid, pos, val, St);
+        else
+            Update(rightSon, mid + 1, right, pos, val, St);
+        St[node] = std::min(St[leftSon], St[rightSon]);
+    }
+}
+void QuerySearch(int node, int left, int right, int Linterv, int Rinterv, int& min, int St[4 * NMAX + 5]) {
+    if (Linterv <= left and right <= Rinterv)
+        min = std::min(min, St[node]);
+    else {
+        int mid = (left + right) / 2, leftSon = 2 * node, rightSon = leftSon + 1;
+        if (Linterv <= mid)
+            QuerySearch(leftSon, left, mid, Linterv, Rinterv, min, St);
+        if (Rinterv > mid)
+            QuerySearch(rightSon, mid + 1, right, Linterv, Rinterv, min, St);
+    }
+}
