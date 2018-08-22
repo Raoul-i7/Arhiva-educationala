@@ -1,0 +1,21 @@
+#include <fstream>
+const std::string programName = "ciur";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int MAX= 2e6;
+int main() {
+    char prim[MAX + 5];
+    int N;
+    f >> N;
+    for (int i = 3; i <= N; ++i)
+        prim[i] = 1;
+    int counter = 0;
+    for (int i = 3; i <= N; ++i)
+        if (prim[i]) {
+            ++counter;
+            for (int j = i + i; j <= N; j += i)
+                prim[j] = 0;
+        }
+    g << counter;
+    return 0x0;
+}
