@@ -1,0 +1,44 @@
+#include <fstream>
+#include <queue>
+const std::string programName = "bfs";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int MAX = 1e5;
+int N, M, Start, dist[MAX + 5];
+std::queue<int> q;
+std::vector<int> Graph[MAX + 5];
+void read();
+void print();
+void BFS(int);
+int main(){
+    read();
+    BFS(Start);
+    print();
+    return 0x0;
+}
+void read(){
+    f >> N >> M >> Start;
+    for (int i = 1; i<= M; ++i) {
+        int x, y;
+        f >> x >> y;
+        Graph[x].push_back(y);
+    }
+}
+void print() {
+    for (int i = 1; i <= N; ++i)
+        g << dist[i] << ' ';
+}
+void BFS(int start) {
+    std::fill(dist + 1, dist + N + 1, -1);
+    q.push(start);
+    dist[start] = 0;
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        for (int x : Graph[node])
+            if (dist[x] == -1){
+                q.push(x);
+                dist[x] = dist[node] + 1;
+            }
+    }
+}
