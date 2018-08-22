@@ -1,0 +1,56 @@
+#include <fstream>
+#include <string.h>
+const std::string programName = "radixsort";
+const int MAX = 1e7;
+const int bits = 8 , size = 1 << bits , mask = size - 1;
+void read(int[], int&, int&, int&, int&);
+void print(int, int[]);
+int getBucket(int, int);
+void countSort(int, int[], int[], int);
+void radixSort(int, int[], int[]);
+int main() {
+    int N, A, B, C;
+    int v[MAX + 5], aux[MAX + 5];
+    read(v, N, A, B, C);
+    radixSort(N, v, aux);
+    print(N, v);
+    return 0;
+}
+void read(int v[],int &N, int &A, int &B, int &C) {
+    std::ifstream f(programName + ".in");
+    f >> N >> A >> B >> C;
+    v[0] = B;
+    for (int i = 1; i < N; ++i)
+        v[i] = (1LL * A * v[i - 1] + B) % C;
+}
+void print(int N, int v[]) {
+    std::ofstream g(programName + ".out");
+    for (int i = 0; i < N; i += 10)
+        g << v[i] << ' ';
+    g << "\n";
+}
+int getBucket(int x, int offset) {
+    return (x >> offset) & mask;
+}
+void countSort(int N, int source[], int destination[], int offset) {
+    int cnt[size], indx[size];
+    memset(cnt, 0, sizeof cnt);
+    for (int i = 0; i < N; ++i) {
+        int val = getBucket(source[i], offset);
+        ++cnt[val];
+    }
+    indx[0] = 0;
+    for (int i = 1; i < size; ++i)
+        indx[i] = cnt[i - 1] + indx[i - 1];
+    for (int i = 0; i < N; ++i) {
+        int val = getBucket(source[i], offset);
+        destination[indx[val]++] = source[i];
+    }
+}
+void radixSort(int N, int v[], int aux[]) {
+    for (int i = 0; i * bits < 32; ++i)
+        if (i & 1)
+            countSort(N, aux, v, i * bits);
+        else
+            countSort(N, v, aux, i * bits);
+}
