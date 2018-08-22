@@ -1,0 +1,64 @@
+#include <fstream>
+const std::string programName = "cautbin";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int MAX = 1e5;
+int equalto0(int, int, int[], int);
+int equalOrLessThan1(int, int, int[], int);
+int equalOrGreaterThan2(int, int, int[], int);
+int main() {
+    int N;
+    f >> N;
+    int v[MAX + 5];
+    for (int i = 1; i <= N; ++i)
+        f >> v[i];
+    int M;
+    f >> M;
+    for (int i = 1; i <= M; ++i) {
+        int quest, val;
+        f >> quest >> val;
+        if (!quest)
+            g << equalto0(1, N, v, val) << "\n";
+        if (quest == 1)
+            g << equalOrLessThan1(1, N, v, val) << "\n";
+        if (quest == 2)
+            g << equalOrGreaterThan2(1, N, v, val) << "\n";
+    }
+    return 0x0;
+}
+int equalto0(int left, int right, int v[], int value) {
+    if (left == right) {
+        if (v[left] == value)
+            return left;
+        else
+            return -1;
+    } else {
+        int mid = (left + right + 1) / 2;
+            if (value >= v[mid])
+                return  equalto0(mid, right, v, value);
+            else
+                return  equalto0(left, mid - 1, v, value);
+    }
+}
+int equalOrLessThan1(int left, int right, int v[], int value) {
+    if (left == right)
+        return left;
+    else {
+        int mid = (left + right + 1) / 2;
+            if (v[mid] <= value)
+                return  equalOrLessThan1(mid, right, v, value);
+            else
+                return  equalOrLessThan1(left, mid - 1, v, value);
+    }
+}
+int equalOrGreaterThan2(int left, int right, int v[], int value) {
+    if (left == right)
+        return left;
+    else {
+        int mid = (left + right) / 2;
+            if (value <= v[mid])
+                return  equalOrGreaterThan2(left, mid, v, value);
+            else
+                return  equalOrGreaterThan2(mid + 1, right, v, value);
+    }
+}
