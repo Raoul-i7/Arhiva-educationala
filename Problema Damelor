@@ -1,0 +1,60 @@
+#include <fstream>
+#include <math.h>
+#include <limits>
+const std::string programName = "damesah";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+int16_t v[13], sol[13];
+void printSol(int);
+bool valid(int);
+int back(int);
+int main() {
+    int16_t N;
+    f >> N;
+    int Solutii = back(N);
+    for (int i = 1; i <= N; i++)
+        g << sol[i] << ' ';
+    g << "\n";
+    g << Solutii;
+    return 0x0;
+}
+void printSol(int N) {
+    for (int i = 1; i <= N; i++)
+        sol[i] = v[i];
+}
+bool valid(int k) {
+    for (int i = 1; i < k; i++)
+        if ((v[k] == v[i]) || (k - i == abs(v[k] - v[i])))
+            return false;
+    return true;
+}
+int back(int N) {
+    bool sol;
+    int16_t primaSol = 1;
+    int16_t i = 1;
+    v[i] = 0;
+    int counter = 0;
+    while (i > 0) {
+        sol = false;
+        while ((v[i] < N) and (!sol)) {
+             v[i]++;
+            sol = valid(i);
+        }
+        if (!sol)
+            i--;
+        else {
+            if (i == N) {
+                if (primaSol) {
+                    printSol(N);
+                    primaSol = 0;
+                }
+                ++counter;
+            }
+            else {
+                i++;
+                v[i] = 0;
+            }
+        }
+    }
+    return counter;
+}
