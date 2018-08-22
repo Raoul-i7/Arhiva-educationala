@@ -1,0 +1,41 @@
+#include <fstream>
+#include <vector>
+const std::string programName = "dfs";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int MAX = 1e5;
+std::vector<int> Graph[MAX + 5];
+bool use[MAX + 5];
+int N, M;
+int nr;
+void read();
+void dfs(int);
+void print();
+int main(){
+    read();
+    print();
+    return 0x0;
+}
+void read() {
+    f >> N >> M;
+    for (int i = 1; i <= M; ++i) {
+        int x, y;
+        f >> x >> y;
+        Graph[x].push_back(y);
+        Graph[y].push_back(x);
+    }
+}
+void dfs(int node) {
+    use[node] = true;
+    for (int x : Graph[node])
+        if (!use[x])
+          dfs(x);
+}
+void print() {
+    for (int i = 1; i <= N; ++i)
+        if (!use[i]) {
+            ++nr;
+            dfs(i);
+        }
+    g << nr;
+}
