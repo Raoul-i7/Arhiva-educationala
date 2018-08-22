@@ -1,0 +1,24 @@
+#include <fstream>
+const std::string programName = "combinari";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+void print(int, int[]);
+void back(int, int, int, int[]);
+int main() {
+    int N, M, v[20] = {0};
+    f >> N >> M; // M <= N
+    back(1, N, M, v);
+    return 0x0;
+}
+void print(int M, int v[]) {
+    for(int i = 1; i <= M; ++i)
+        g << v[i] << ' ';
+    g << "\n";
+}
+void back(int k, int N, int M, int v[]) {
+    if(k == M + 1)
+        print(M, v);
+    else
+        for(v[k] = v[k - 1] + 1; v[k] <= N; ++v[k])
+            back(k + 1, N, M, v);
+}
