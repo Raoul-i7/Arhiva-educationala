@@ -1,0 +1,17 @@
+#include <fstream>
+#include <algorithm>
+const std::string programName = "algsort";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int MAX = 5e5;
+int main() {
+    int N;
+    f >> N;
+    int v[MAX + 5];
+    for (int i = 1; i <= N; ++i)
+        f >> v[i];
+    std::sort(v + 1, v + N + 1);
+    for (int i = 1; i <= N; ++i)
+        g << v[i] << ' ';
+    return 0x0;
+}
