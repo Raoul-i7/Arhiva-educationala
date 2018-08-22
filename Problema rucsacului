@@ -1,0 +1,22 @@
+#include <fstream>
+const std::string programName = "rucsac";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int NMAX = 5e3, GMAX = 1e4;
+int main() {
+    int N, G;
+    f >> N >> G;
+    int weights[NMAX + 5], profits[NMAX + 5];
+    for (int i = 1; i <= N; ++i)
+        f >> weights[i] >> profits[i];
+    int dynamic[2][GMAX + 5];
+    for (int i = 1, current = 1, prev = 0; i <= N; ++i, current = 1 - current, prev = 1 - prev)
+        for (int j = 0; j <= G; ++j) {
+            if (weights[i] > j)
+                dynamic[current][j] = dynamic[prev][j];
+            else
+                dynamic[current][j] = std::max(dynamic[prev][j], profits[i] + dynamic[prev][j - weights[i]]);
+        }
+    g << dynamic[N & 1][G];
+    return 0x0;
+}
