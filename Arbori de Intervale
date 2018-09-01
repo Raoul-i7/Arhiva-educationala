@@ -1,65 +1,65 @@
 #include <fstream>
-std::ifstream f("arbint.in");
-std::ofstream g("arbint.out");
-const int MAX = 1e5, INF = 0x3f3f3f3f;
-void Build(int, int, int, int[], int[]);
-void query(int, int, int, int, int, int&, int St[]);
-void update(int, int, int, int, int, int[]);
+const std::string programName = "aib";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int MAX = 1e5;
+void Update(int, int, int, int[]);
+int Query(int, int[]);
+int QuerySearch(int, int, int, int[]);
+int intervalSum(int, int, int[]);
 int main() {
     int N, M;
     f >> N >> M;
-    int v[MAX + 5], St[4 * MAX + 5];
-    for (int i = 1; i <= N; ++i)
-        f >> v[i];
-    Build(1, 1, N, v, St);
-    int quest;
-    for (int i = 0; i < M; ++i){
+    int pw2;
+    for (pw2 = 1; pw2 <= N; pw2 *= 2);
+        pw2 /= 2;
+    int aib[MAX + 5];
+    for (int pos = 1; pos <= N; ++pos) {
+        int val;
+        f >> val;
+        Update(N, pos, val, aib);
+    }
+    while (M--) {
+        int quest;
         f >> quest;
-        if (!quest) {
-            int a, b;
-            int answer = -INF;
-            f >> a >> b;
-            query(1, 1, N, a, b, answer, St);
-            g << answer << "\n";
-        }
-        int value, position;
-        if (quest == 1) {
+        if (!quest){
+            int position;
+            int value;
             f >> position >> value;
-            update(1, 1, N, position, value, St);
+            Update(N, position, value, aib);
+        } else if (quest == 1){ //AICI
+            int left, right;
+            f >> left >> right;
+            g << intervalSum(left, right, aib) << "\n";
+        } else {
+            int value;
+            f >> value;
+            g << QuerySearch(N, pw2, value, aib) << "\n";
         }
     }
     return 0x0;
 }
-void Build(int node, int left, int right, int v[], int St[]){
-    if(left == right)
-      St[node] = v[left];
-    else {
-        int mid = (left + right) / 2, leftSon = 2 * node, rightSon = leftSon + 1;
-        Build(leftSon, left, mid,v, St);
-        Build(rightSon, mid + 1, right, v, St);
-        St[node] = std::max(St[leftSon], St[rightSon]);
-    }
+void Update(int N, int pos, int val, int aib[]) {
+    for (int i = pos; i <= N; i += (i & -i))
+        aib[i] += val;
 }
-void query(int node, int left, int right, int queryL, int queryR, int& max, int St[]){
-    if(queryL <= left and right <= queryR)
-        max = std::max(max, St[node]);
-    else {
-        int mid = (left + right) / 2, leftSon = 2 * node, rightSon = leftSon + 1;
-        if (queryL <= mid)
-            query(leftSon, left, mid, queryL, queryR, max, St);
-        if (queryR > mid)
-            query(rightSon, mid + 1, right, queryL, queryR, max, St);
-    }
+int Query(int pos, int aib[]) {
+    int ans = 0;
+    for (int i = pos; i > 0; i -= (i & -i))
+        ans += aib[i];
+    return ans;
 }
-void update(int node, int left, int right, int pos, int val, int St[]){
-    if(left == right)
-        St[node] = val;
-    else {
-        int mid = (left + right) / 2, leftSon = 2 * node, rightSon = leftSon + 1;
-        if(pos <= mid)
-            update(leftSon, left, mid, pos, val, St);
-        else
-            update(rightSon, mid + 1, right, pos, val, St);
-        St[node] = std::max(St[leftSon], St[rightSon]);
-    }
+int QuerySearch(int N, int power2, int value, int aib[]) {
+    for (int pos = 0, step = power2; step; step /= 2)
+        if ((pos + step) <= N and aib[pos + step] <= value){
+            pos += step;
+            value -= aib[pos];
+            if(!value)
+                return pos;
+        }
+    return -1;
 }
+int intervalSum(int left, int right, int aib[]) {
+    return Query(right, aib) - Query(left - 1, aib);
+}
+
