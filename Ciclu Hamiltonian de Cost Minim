@@ -1,0 +1,37 @@
+#include <fstream>
+#include <vector>
+const std::string programName = "hamilton";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int MAX = 18, INF = 0x3f3f3f3f;
+int Cost[1 << MAX][MAX];
+int main() {
+    int N, M;
+    f >> N >> M;
+    std::vector < std::pair<int, int> > Graph[MAX];
+    while (M--) {
+        int x, y, c;
+        f >> x >> y >> c;
+        Graph[x].emplace_back(y, c);
+    }
+    for (int i = 0 ; i < (1 << N); ++i)
+        for (int j = 0; j < N; ++j)
+            Cost[i][j] = INF;
+    Cost[1][0] = 0;
+    for (int conf = 2; conf < (1 << N); ++conf)
+        for (int last = 0; last < N; ++last)
+            if (conf & (1 << last)) {
+                int previous = conf ^ (1 << last);
+                for (auto it : Graph[last])
+                    if(previous & (1 << it.first))
+                        Cost[conf][last] = std::min(Cost[conf][last], Cost[previous][it.first] + it.second);
+            }
+    int answer = INF;
+    for (auto it : Graph[0])
+        answer = std::min(answer, Cost[(1 << N) - 1][it.first] + it.second);
+    if (answer == INF)
+        g << "Nu exista solutie";
+    else
+        g << answer << "\n";
+    return 0x0;
+}
