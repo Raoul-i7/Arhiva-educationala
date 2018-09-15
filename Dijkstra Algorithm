@@ -1,12 +1,22 @@
 #include <fstream>
+#include <bitset>
 #include <vector>
-const std::string programName = "dijkstra";
-std::ifstream f(programName + ".in");
-std::ofstream g(programName + ".out");
-const int MAX = 5e4, INF = 0x7E7E7E7E;
+#include <queue>
+const std :: string programName = "dijkstra";
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+const int MAX = 5E4, INF = 0x7E7E7E7E;
 int N, M, Dist[MAX + 5];
-bool use[MAX + 5];
-std::vector < std::pair <int, int> > Graph[MAX + 5];
+std :: bitset <MAX + 5> use;
+std :: vector < std :: pair <int, int> > Graph[MAX + 5];
+struct HeapNode {
+    int node, cost;
+    HeapNode(int n, int c) : node(n), cost(c) {}
+    bool operator < (const HeapNode &other) const {
+        return cost > other.cost;
+    }
+};
+std :: priority_queue <HeapNode> queue;
 void read();
 void print();
 void Dijkstra();
@@ -32,16 +42,18 @@ void print() {
 void Dijkstra() {
     for (int i = 2; i <= N; ++i)
         Dist[i] = INF;
-    Dist[1] = 0;
-    int min, Xcopy = 0;
-    for (int i = 1; i <= N; ++i) {
-        min = INF;
-        for (int j = 1; j <= N; ++j)
-            if (!use[j] and Dist[j] < min)
-                    min = Dist[j], Xcopy = j;
-        use[Xcopy] = true;
-        for (const auto& edge : Graph[Xcopy])
-            if(Dist[edge.first] > Dist[Xcopy] + edge.second)
-                Dist[edge.first] = Dist[Xcopy] + edge.second;
+    queue.emplace(1, 0);
+    while (!queue.empty()) {
+        int Node = queue.top().node;
+        int cost = queue.top().cost;
+        queue.pop();
+        if (cost != Dist[Node])
+            continue;
+        for (const auto &it : Graph[Node]) {
+            if (Dist[it.first] > cost + it.second) {
+                Dist[it.first] = cost + it.second;
+                queue.emplace(it.first, cost + it.second);
+            }
+        }
     }
 }
