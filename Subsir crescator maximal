@@ -1,0 +1,38 @@
+#include <fstream>
+const std :: string programName = "scmax";
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+const int MAX = 1e5;
+int N, pre[MAX + 5], best[MAX + 5], v[MAX + 5], max, sol = 0, Xcopy;
+void dinamic();
+void print();
+int main() {
+    f >> N;
+    for (int i = 1; i <= N; ++i)
+        f >> v[i];
+    dinamic();
+    g << max << "\n";
+    print();
+    return 0x0;
+}
+void dinamic() {
+    best[N] = 1;
+    pre[N] = -1;
+    max = 1;
+    Xcopy = N;
+    for (int i = N; i >= 1; --i) {
+        best[i] = 1;
+        pre[i] = -1;
+        for (int j = i + 1; j <= N; ++j)
+            if (v[i] < v[j] and best[i] < best[j] + 1) {
+                pre[i] = j;
+                best[i] = best[j] + 1;
+                if (best[i] > max)
+                    max = best[i], Xcopy = i;
+            }
+   }
+}
+void print() {
+    for (int i = Xcopy; i != -1; i = pre[i])
+        g << v[i] << ' ';
+}
