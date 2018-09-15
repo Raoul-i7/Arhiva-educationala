@@ -1,0 +1,47 @@
+#include <fstream>
+#include <vector>
+const std::string programName = "dijkstra";
+std::ifstream f(programName + ".in");
+std::ofstream g(programName + ".out");
+const int MAX = 5e4, INF = 0x7E7E7E7E;
+int N, M, Dist[MAX + 5];
+bool use[MAX + 5];
+std::vector < std::pair <int, int> > Graph[MAX + 5];
+void read();
+void print();
+void Dijkstra();
+int main() {
+    read();
+    Dijkstra();
+    print();
+    return 0x0;
+}
+void read() {
+    f >> N >> M;
+    for (int i = 1; i <= M; ++i) {
+        int x, y, cost;
+        f >> x >> y >> cost;
+        Graph[x].emplace_back(y, cost);
+    }
+}
+void print() {
+    for (int i = 2; i <= N; ++i)
+        g << (Dist[i] == INF ? 0 : Dist[i]) << ' ';
+    g << "\n";
+}
+void Dijkstra() {
+    for (int i = 2; i <= N; ++i)
+        Dist[i] = INF;
+    Dist[1] = 0;
+    int min, Xcopy = 0;
+    for (int i = 1; i <= N; ++i) {
+        min = INF;
+        for (int j = 1; j <= N; ++j)
+            if (!use[j] and Dist[j] < min)
+                    min = Dist[j], Xcopy = j;
+        use[Xcopy] = true;
+        for (const auto& edge : Graph[Xcopy])
+            if(Dist[edge.first] > Dist[Xcopy] + edge.second)
+                Dist[edge.first] = Dist[Xcopy] + edge.second;
+    }
+}
