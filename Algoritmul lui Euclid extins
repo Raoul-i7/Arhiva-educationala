@@ -1,0 +1,35 @@
+#include <fstream>
+#include <assert.h>
+const std :: string programName = "euclid3";
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+int cmmdc(int, int, int&, int&);
+int main(void) {
+    int T;
+    for (f >> T, assert( T <= 100 ); T--;  ) {
+        int a, b, c;
+        f >> a >> b >> c;
+        assert(-1000000000 <= a and a <= 1000000000);
+        assert(-1000000000 <= b and b <= 1000000000);
+        assert(-2000000000 <= c and c <= 2000000000 and c != 0);
+        int X, Y;
+        int d = cmmdc(a, b, X, Y);
+        if (c % d)
+            g << 0 << ' ' << 0 << "\n";
+        else
+            g << X * (c / d) << ' ' << Y * (c / d) << "\n";
+    }
+    return 0x0;
+}
+int cmmdc(int a, int b, int& X, int& Y) {
+    if (!b) {
+        X = 1;
+        Y = 0;
+        return a;
+    }
+    int Xcopy, Ycopy, d;
+    d = cmmdc(b, a % b, Xcopy, Ycopy);
+    X = Ycopy;
+    Y = Xcopy - (a / b) * Ycopy;
+    return d;
+}
