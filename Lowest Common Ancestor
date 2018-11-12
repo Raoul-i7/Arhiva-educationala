@@ -1,0 +1,79 @@
+	
+#include <fstream>
+#include <vector>
+ 
+const std :: string programName = "lca";
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+ 
+const int NMAX = 1E5;
+ 
+int N, M, tati[20][NMAX + 5], Level[NMAX + 5], Log2[NMAX+ 5];
+ 
+std :: vector <int> Graph[NMAX+ 5];
+ 
+void Read(void);
+void Precalculate(void);
+void DFS(int);
+void Solve(void);
+int LCA(int, int);
+ 
+int main(void) {
+    Read();
+    Precalculate();
+    DFS(1);
+    Solve();
+    return 0x0;
+}
+ 
+void Read(void) {
+    f >> N >> M;
+    for (int i = 2; i <= N; ++i) {
+        f >> tati[0][i];
+        Graph[tati[0][i]].push_back(i);
+    }
+}
+ 
+void Precalculate(void) {
+    for (int i = 2; i <= N; ++i)
+        Log2[i] = Log2[i / 2] + 1;
+    
+    for (int i = 1; (1 << i) <= N; ++i)
+        for (int j = 1; j <= N; ++j)
+            tati[i][j] = tati[i - 1][tati[i - 1][j]];
+}
+ 
+void DFS(int Node) {
+    for (size_t i = 0; i < Graph[Node].size(); ++i) {
+        int Vecin = Graph[Node][i];
+        Level[Vecin] = Level[Node] + 1;
+        DFS(Vecin);
+    }
+}
+ 
+void Solve(void) {
+    while (M--) {
+        int x,y;
+        f >> x >> y;
+        g << LCA(x,y) << "\n";
+    }
+}
+ 
+int LCA(int x, int y) {
+    if (Level[x] < Level[y])
+       std :: swap(x, y);
+    
+    while (Level[x] != Level[y]) {
+        int K = Log2[Level[x] - Level[y]];
+        x = tati[K][x];
+    }
+    if (x == y)
+        return x;
+    for (int i = Log2[Level[x]]; i >= 0; --i) {
+        if (tati[i][x] != tati[i][y]) {
+            x = tati[i][x];
+            y = tati[i][y];
+        }
+    }
+    return tati[0][x];
+}
