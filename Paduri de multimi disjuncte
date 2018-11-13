@@ -1,0 +1,68 @@
+#include <fstream>
+
+const std :: string programName = "disjoint";
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+
+const int NMAX = 1E5;
+
+int N, M, rang[NMAX + 5], tati[NMAX + 5];
+
+int find(int);
+void unite(int, int);
+
+int main(void) {
+    f >> N >> M;
+    // nodul pointeaza catre el insusi, iar rangul e 1
+    for (int i = 1; i <= N; ++i) {
+        tati[i] = i;
+        rang[i] = 1;
+    }
+ 
+    for (int i = 1; i <= M; ++i) {
+        int quest, x, y;
+        f >> quest >> x >> y;
+        switch (quest) {
+        case 1:
+            // unesc multimile arborilor care le sunt corespunzatori nodurilor x si y
+            if (find(x) == find(y))
+                return 0;
+            if (find(x) != find(y))
+                unite(find(x), find(y));
+            break;
+ 
+        case 2:
+            // verific daca radacina arborior in care se afla x si y e egala
+            if (find(x) == find(y))
+                g << "DA" << "\n";
+            else
+                g << "NU" << "\n";
+            break;
+        }
+    }
+    return 0x0;
+}
+int find(int leaf) {
+    int root, otherOne;
+    // merg in sus pe arbore pana gasesc un nod care pointeaza catre el insusi
+    for (root = leaf; tati[root] != root; root = tati[root]);
+ 
+    // compresia drumurilor
+    while (tati[leaf] != leaf) {
+        otherOne = tati[leaf];
+        tati[leaf]  = root;
+        leaf = otherOne;
+    }
+    return root;
+}
+void unite(int leaf, int otherOne) {
+    // unesc multimea de rang mai mic de cea cu rang mai mare
+    if (rang[leaf] > rang[otherOne])
+        tati[otherOne] = leaf;
+    else
+        tati[leaf] = otherOne;
+    // cazul rangului egal, crestem rangul celei in care unim
+ 
+    if (rang[leaf] == rang[otherOne])
+        rang[otherOne]++;
+}
