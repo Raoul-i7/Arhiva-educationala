@@ -1,0 +1,46 @@
+#include <fstream>
+
+const std :: string programName = "royfloyd";
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+
+const int NMAX = 105;
+
+int N, Matrix[NMAX][NMAX];
+
+void read();
+void Roy_Warshall();
+void print();
+
+int main(void) {
+	read();
+	Roy_Warshall();
+	print();	
+	return 0x0;
+}
+
+void read() {
+	f >> N;
+	for (int i = 1; i <= N; ++i)
+		for (int j = 1; j <= N; ++j)
+			f >> Matrix[i][j];
+}
+
+void Roy_Warshall() {
+        for (int step = 1; step <= N; ++step)
+                for (int i = 1; i <= N; ++i)
+                        for (int j = 1; j <= N; ++j) {
+                                bool condition = (Matrix[i][j] > Matrix[i][step] + Matrix[step][j]);
+                                bool condition2 = (condition or not(Matrix[i][j]));
+                                if (Matrix[i][step] and Matrix[step][j] and condition2 and i != j)
+                                                Matrix[i][j] = Matrix[step][j] + Matrix[i][step];
+                        }
+}
+
+void print() {
+	for (int i = 1; i <= N; ++i) {
+		for (int j = 1; j <= N; ++j)
+			g << Matrix[i][j] << ' ';
+		g << '\n';	
+	}
+}
