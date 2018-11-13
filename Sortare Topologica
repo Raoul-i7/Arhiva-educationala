@@ -1,0 +1,50 @@
+#include <fstream>
+#include <vector>
+
+const std :: string programName = "sortaret";
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+
+const int NMAX = 5E4;
+
+int N, M, grade[NMAX + 5], queue[NMAX + 5];
+
+std :: vector <int> Graph[NMAX + 5];
+
+void read(void);
+void write(void);
+void topoSort(void);
+
+int main(void) {
+    read();
+    topoSort();
+    write();
+    return 0x0;
+}
+void read(void) {
+    f >> N >> M;
+    while (M--) {
+        int x, y;
+        f >> x >> y;
+        Graph[x].push_back(y);
+        grade[y]++;
+    }
+}
+void write(void) {
+    for (int i = 1; i <= N; i++)
+        g << queue[i] << ' ';
+}
+void topoSort(void) {
+    int k(1);
+    for (; k <= N; k++)
+        if(!grade[k])
+            queue[++queue[0]] = k;
+    for (int i = 1; i <= N; i++) {
+        k = queue[i];
+        for (auto it : Graph[k]) {
+            grade[it]--;
+            if (!grade[it])
+                queue[++queue[0]] = it;
+        }
+    }
+}
