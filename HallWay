@@ -1,0 +1,74 @@
+//
+//  HallWay.cpp
+//
+//
+//  Created by Raoul Bocancea on 12/11/2018.
+//
+ 
+#include <fstream>
+#include <iomanip>
+#include <cmath>
+ 
+const std :: string programName = "hallway";
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+ 
+const int NMAX = 1E3;
+ 
+struct Point {
+    int64_t x, y;
+} arr[NMAX + 5];
+ 
+int M, N, K, previous[NMAX + 5];
+ 
+double dist[NMAX + 5][NMAX + 5], cost[NMAX + 5];
+ 
+bool use[NMAX + 5];
+ 
+void read(void);
+void Dijkstra(void);
+inline double distance(Point a, Point b) { return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)); }
+ 
+int main(void) {
+    read();
+    Dijkstra();
+    g << std :: fixed << std :: setprecision(8) << (cost[K] / 2) << '\n';
+    return 0x0;
+}
+ 
+void read(void) {
+    f >> M >> N >> K;
+    for (int i = 1; i <= K; ++i)
+        f >> arr[i].x >> arr[i].y;
+}
+ 
+void Dijkstra(void) {
+    
+    dist[0][K + 1] = dist[K + 1][0] = N;
+    
+    for (int i = 1; i <= K; ++i) {
+        for (int j = 1; j < i; ++j)
+            dist[i][j] = dist[j][i] = distance(arr[i], arr[j]);
+        dist[i][0] = arr[i].y;
+        dist[K + 1][i] = dist[i][K + 1] = N - arr[i].y;
+    }
+    ++K;
+    
+    //dijkstra
+    use[0] = true;
+    for (int i = 1; i <= K; ++i)
+        cost[i] = dist[i][0];
+    while (not(use[K])) {
+        int best = K;
+        for (int i = 1; i < K; ++i)
+            if (not(use[i]) and cost[i] < cost[best])
+                best = i;
+        use[best] = true;
+        cost[best] = std :: max(cost[best], cost[previous[best]]);
+        for (int i = 1; i <= K; ++i)
+            if (not(use[i]) and dist[best][i] < cost[i]) {
+                cost[i] = dist[best][i];        //dist max
+                previous[i] = best;
+            }
+    }
+}
