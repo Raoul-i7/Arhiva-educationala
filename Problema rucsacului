@@ -1,9 +1,13 @@
 #include <fstream>
-const std::string programName = "rucsac";
-std::ifstream f(programName + ".in");
-std::ofstream g(programName + ".out");
+
+const std :: string programName = "rucsac";
+
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+
 const int NMAX = 5e3, GMAX = 1e4;
-int main() {
+
+int main(void) {
     int N, G;
     f >> N >> G;
     int weights[NMAX + 5], profits[NMAX + 5];
