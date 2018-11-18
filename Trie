@@ -1,4 +1,3 @@
-// 90 PUNCTE
 //
 //  Trie.cpp
 //
@@ -6,73 +5,71 @@
 //  Created by Raoul Bocancea on 14/11/2018.
 //
 
-#include <fstream>
+ #include <fstream>
 
-#define l *lit - 'a'
-
-const std :: string programName = "trie";
-std :: ifstream f(programName + ".in");
-std :: ofstream g(programName + ".out");
+ #define l (*lit - 'a')
+ 
+ const std :: string programName = "trie";
+ std :: ifstream f(programName + ".in");
+ std :: ofstream g(programName + ".out");
 
 class Trie {
-    
 public:
-    int no_words, no_sons;
     Trie* sons[26];
-    
+    int no_sons, no_words;
     Trie() {
-        no_words = no_sons = 0;
-        for (int i = 0; i < 26; ++i)
-            sons[i] = 0;
+        no_sons = no_words = 0;
+        for (size_t i = 0; i < 26; ++i)
+            sons[i] = nullptr;
     }
     
-    void ins(char *lit) {
+    void ins(char* lit) {
         if (*lit) {
-            if (!sons[l]) {
-                ++no_sons;
+            if (sons[l] == nullptr) {
+                no_sons++;
                 sons[l] = new Trie;
             }
             sons[l]->ins(lit + 1);
-        }
-        else
-            ++no_words;
+        } else
+            no_words++;
     }
     
-    bool del(char *lit) {
-        if (!*lit)
+    bool del(char* lit) {
+        if (*lit == 0)
             --no_words;
         else if (sons[l]->del(lit + 1)) {
             delete sons[l];
             sons[l] = 0;
-            --no_sons;
+            no_sons--;
         }
         if (no_words or no_sons)
             return false;
         return true;
     }
     
-    int nap(char *lit) {
+    int nr_app(char* lit) {
         if (*lit) {
             if (sons[l])
-                return sons[l]->nap(lit + 1);
+                return sons[l]->nr_app(lit + 1);
             return 0;
         }
         return no_words;
     }
     
-    int pref(char *lit, int size) {
-        if (!*lit)
+    int pref(char* lit, int size) {
+        if (*lit == 0)
             return size;
         if (sons[l])
             return sons[l]->pref(lit + 1, size + 1);
         return size;
     }
+    
 };
 
 int main(void) {
     Trie trie = Trie();
-    int quest;
     char s[21];
+    int quest;
     while (f >> quest >> s)
         switch (quest) {
             case 0:
@@ -82,7 +79,7 @@ int main(void) {
                 trie.del(s);
                 break;
             case 2:
-                g << trie.nap(s) << '\n';
+                g << trie.nr_app(s) << '\n';
                 break;
             case 3:
                 g << trie.pref(s, 0) << '\n';
