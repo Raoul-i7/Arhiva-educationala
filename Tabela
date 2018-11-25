@@ -1,0 +1,20 @@
+//
+//  Tabela.cpp
+//  
+//
+//  Created by Raoul Bocancea on 24/11/2018.
+//
+ 
+#include <fstream>
+ 
+const std :: string programName = "tabela";
+std :: ifstream f(programName + ".in");
+std :: ofstream g(programName + ".out");
+ 
+int L, C;
+ 
+int main(void) {
+    f >> L >> C;
+    g << ((L - 1) ^ (C - 1));
+    return 0x0;
+}
